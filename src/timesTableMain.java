@@ -53,7 +53,7 @@ public class timesTableMain extends Application {
                Number oldValue, 
                Number newValue) { 
                   value.textProperty().setValue(
-                       String.valueOf(newValue.doubleValue()));
+                       String.format("%.1f", newValue.doubleValue()));
               }
         });
 

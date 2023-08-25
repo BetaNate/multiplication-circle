@@ -12,17 +12,26 @@ import javafx.scene.control.Slider;
 import javafx.scene.paint.Color;
 
 public class timesTable {
-    //private final int pointArray[] = new int[(int)tableSize.getValue()];
 
     //Method for making times tables
-    public int[] generateConnections(int points[]) {
+    public void generateCircle(double multVal, int points) {
 
-        final int timesArray[] = new int[points.length + 1];
+        //Errors claim that these variables are not permitted to be private, ask professor.
+        final int pointArray[] = new int[points];
+        final double timesArray[] = new double[points];
 
-        for (int i = 0; i < timesArray.length; i++) {
-            timesArray[i] = i*points.length;
+        for (int i = 0; i < pointArray.length; i++) {
+            pointArray[i] = i;
         }
-        return timesArray; 
+
+        for (int j = 0; j < timesArray.length; j++) {
+            if (j*multVal > points) {
+                timesArray[j] = (j*multVal) % points;
+            }
+            else {
+                timesArray[j] = j*multVal;
+            }
+        }
     }
 
     public void start() {
