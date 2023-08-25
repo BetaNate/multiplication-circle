@@ -18,14 +18,16 @@ public class timesTable {
 
         //Errors claim that these variables are not permitted to be private, ask professor.
         final int pointArray[] = new int[points];
-        final double timesArray[] = new double[points];
+        final double timesArray[] = new double[points + 1];
 
         for (int i = 0; i < pointArray.length; i++) {
             pointArray[i] = i;
         }
 
+        //If the value is larger than the points of the circle, modulus for next point.
+        //This method is accurate for small values, unknown for larger values.
         for (int j = 0; j < timesArray.length; j++) {
-            if (j*multVal > points) {
+            if (j*multVal >= points) {
                 timesArray[j] = (j*multVal) % points;
             }
             else {
