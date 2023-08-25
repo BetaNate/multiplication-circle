@@ -12,28 +12,15 @@ import javafx.scene.control.Slider;
 import javafx.scene.paint.Color;
 
 public class timesTable {
-    
-    final Slider tableSize = new Slider(2,360,2);
-    final Slider points = new Slider(0,360,5);
+    //private final int pointArray[] = new int[(int)tableSize.getValue()];
 
-    final Label tableCaption = new Label ("Times Table Value:");
-    final Label pointCaption = new Label ("Number of Points:");
+    //Method for making times tables
+    public int[] generateConnections(int points[]) {
 
-    final Label tableValue = new Label (Double.toString(tableSize.getValue()));
-    final Label pointValue = new Label (Double.toString(points.getValue()));
+        final int timesArray[] = new int[points.length + 1];
 
-    final static Color textColor = Color.WHITE;
-
-    int size = (int)tableSize.getValue();
-
-    private int[][] generateTable(int size) {
-        int[][] timesArray = new int[size][size];
-        
-
-        for (int row = 0; row < timesArray.length; row++) {
-            for (int col = 0; col < timesArray[row].length; col++) {
-                timesArray[row][col] = (row+1)*(col+1);
-            }
+        for (int i = 0; i < timesArray.length; i++) {
+            timesArray[i] = i*points.length;
         }
         return timesArray; 
     }
@@ -46,7 +33,7 @@ public class timesTable {
                 Duration nowDur = Duration.of(now, ChronoUnit.NANOS);
                 if (nowDur.minus(lastUpdate).toMillis() > 25) {
                     lastUpdate = nowDur;    
-                    generateTable(size);
+                  //  generateConnections(pointArray);
                 }
             }
         };
