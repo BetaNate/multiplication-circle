@@ -1,4 +1,4 @@
-import java.util.List;
+import java.util.ArrayList;
 
 import javafx.application.Application;
 import javafx.beans.value.ObservableValue;
@@ -8,14 +8,11 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.effect.Light.Point;
 import javafx.scene.control.Slider;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
+import javafx.scene.layout.Pane;
 
 public class timesTableMain extends Application {
     public static void main(String[] args) {
@@ -26,17 +23,20 @@ public class timesTableMain extends Application {
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Times Table Visualization");
 
-        double drawSize = 400;
-        double optSize = 50;
+        //Initialize Variables
+        int drawSize = 750;
+        int optSize = 50;
 
+        //Box Initializtion
         BorderPane root = new BorderPane();
 
-        VBox drawing = new VBox(10);
+        Pane drawing = new Pane();
         VBox options = new VBox(10);
         HBox pointInput = new HBox(8);
         HBox valInput = new HBox(8);
 
 
+        //Text box input for setting points
         Label pointLabel = new Label("Number of Points: ");
         TextField pointsAmt = new TextField();
         Button submitP = new Button("Submit");
@@ -61,8 +61,11 @@ public class timesTableMain extends Application {
               }
         });
 
+
+        //Animation control
         Button animCtrl = new Button("Play/Pause");
 
+        //Add elements to fields for BorderPane
         pointInput.getChildren().addAll(pointLabel,pointsAmt, submitP);
         valInput.getChildren().addAll(valLabel, value);
 
@@ -74,24 +77,17 @@ public class timesTableMain extends Application {
 
         options.setMinHeight(optSize);
 
-        //Testing Circle generation
-        Circle circle = new Circle(150.0f, 150.0f, 100.0f, Color.TRANSPARENT);
-        circle.setStroke(Color.BLACK);
+        timesTable generator = new timesTable();
 
-        //List<Node> dots = getCircledDots(16, circle, 3.0f);
-
-        drawing.getChildren().add(circle);
-        //drawing.getChildren().addAll(dots);
+        generator.createCircle(drawing, 11);
 
         root.setCenter(drawing);
         root.setTop(options);
 
-        timesTable table = new timesTable();
-
         Scene scene = new Scene(root, (drawSize + optSize), (drawSize + optSize));
         primaryStage.setScene(scene);
         primaryStage.show();
+        generator.start();
 
-        table.start();
     }
 }

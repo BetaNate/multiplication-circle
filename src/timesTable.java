@@ -2,37 +2,55 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
 import javafx.animation.AnimationTimer;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.geometry.Insets;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.effect.Light.Point;
-import javafx.scene.input.InputEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.robot.Robot;
+import javafx.scene.shape.Circle;
+import java.util.ArrayList;
+import javafx.scene.layout.Pane;
 
 public class timesTable {
 
-    //Method for making times tables
-    public void generateCircle(double multVal, int points) {
+
+    ArrayList<Circle> points = new ArrayList<>();
+
+    public void createCircle(Pane drawing, int pointAmt) {
+        int centerX = 400;
+        int centerY = 200;
+
+        int pointRadius = 1;
+        int circleRadius = 150;
+
+        for(int i = 0; i < pointAmt; i++) {
+            double degrees = 360 * i / pointAmt;
+            double angle = Math.toRadians(degrees);
+
+            double xOffset = centerX + (Math.cos(angle) * circleRadius);
+            double yOffset = centerY + (Math.sin(angle) * circleRadius);
+
+            Circle point = new Circle(xOffset, yOffset, pointRadius);
+            point.setFill(Color.WHITE);
+            points.add(point);
+
+            System.out.print(points.get(i));
+
+            drawing.getChildren().add(points.get(i));
+        }
+    }
+
+        //Method for making times tables
+        public void generateLines(double multVal, ArrayList<Circle> points) {
 
         //Errors claim that these variables are not permitted to be private, ask professor.
-        final int pointArray[] = new int[points];
-        final double timesArray[] = new double[points + 1];
-
-        for (int i = 0; i < pointArray.length; i++) {
-            pointArray[i] = i;
-        }
+        //final int pointArray[] = new int[points];
+        final double timesArray[] = new double[points.size() + 1];
 
         //If the value is larger than the points of the circle, modulus for next point.
         //This method is accurate for small values, unknown for larger values.
-        for (int j = 0; j < timesArray.length; j++) {
-            if (j*multVal >= points) {
-                timesArray[j] = (j*multVal) % points;
+        for (int i = 0; i < timesArray.length; i++) {
+            if (i*multVal >= points.size()) {
+                timesArray[i] = (i*multVal) % points.size();
             }
             else {
-                timesArray[j] = j*multVal;
+                timesArray[i] = i*multVal;
             }
         }
     }
