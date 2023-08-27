@@ -1,3 +1,5 @@
+import java.util.List;
+
 import javafx.application.Application;
 import javafx.beans.value.ObservableValue;
 import javafx.beans.value.ChangeListener;
@@ -10,8 +12,10 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.Light.Point;
 import javafx.scene.control.Slider;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 
 public class timesTableMain extends Application {
     public static void main(String[] args) {
@@ -22,7 +26,7 @@ public class timesTableMain extends Application {
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Times Table Visualization");
 
-        double drawSize = 750;
+        double drawSize = 400;
         double optSize = 50;
 
         BorderPane root = new BorderPane();
@@ -69,6 +73,15 @@ public class timesTableMain extends Application {
         drawing.setMinHeight(drawSize);
 
         options.setMinHeight(optSize);
+
+        //Testing Circle generation
+        Circle circle = new Circle(150.0f, 150.0f, 100.0f, Color.TRANSPARENT);
+        circle.setStroke(Color.BLACK);
+
+        //List<Node> dots = getCircledDots(16, circle, 3.0f);
+
+        drawing.getChildren().add(circle);
+        //drawing.getChildren().addAll(dots);
 
         root.setCenter(drawing);
         root.setTop(options);

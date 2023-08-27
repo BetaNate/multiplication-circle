@@ -7,9 +7,10 @@ import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.effect.Light.Point;
+import javafx.scene.input.InputEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.robot.Robot;
 
 public class timesTable {
 
