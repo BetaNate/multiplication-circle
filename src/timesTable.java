@@ -4,6 +4,7 @@ import java.time.temporal.ChronoUnit;
 import javafx.animation.AnimationTimer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import java.util.ArrayList;
 import javafx.scene.layout.Pane;
 
@@ -11,8 +12,9 @@ public class timesTable {
 
 
     ArrayList<Circle> points = new ArrayList<>();
+    ArrayList<Line> lines = new ArrayList<>();
 
-    public void createCircle(Pane drawing, int pointAmt) {
+    public ArrayList createCircle(Pane drawing, int pointAmt) {
         int centerX = 400;
         int centerY = 200;
 
@@ -30,31 +32,70 @@ public class timesTable {
             point.setFill(Color.WHITE);
             points.add(point);
 
-            System.out.print(points.get(i));
-
             drawing.getChildren().add(points.get(i));
         }
+
+        return points;
     }
 
-        //Method for making times tables
-        public void generateLines(double multVal, ArrayList<Circle> points) {
+        //Method for making lines
+        /*Input: multVal: Times table value, points: Circle made from createCircle()
+                 drawing: Pane needed for displaying lines on GUI
+        */
+        public void createLines(Pane drawing, int multVal, ArrayList<Circle> points) {
 
-        //Errors claim that these variables are not permitted to be private, ask professor.
-        //final int pointArray[] = new int[points];
-        final double timesArray[] = new double[points.size() + 1];
+        //Initialize variables
+        //Will store the position of the start and end points for each line
+        double lineStartX;
+        double lineStartY;
+        double lineEndX;
+        double lineEndY;
 
-        //If the value is larger than the points of the circle, modulus for next point.
-        //This method is accurate for small values, unknown for larger values.
-        for (int i = 0; i < timesArray.length; i++) {
+        //Loop through
+        for(int i = 0; i < points.size(); i++) {
+
+            //Store starting point and get position
+            Circle pointStart = new Circle();
+            pointStart= points.get(i);
+            lineStartX = pointStart.getCenterX();
+            lineStartY = pointStart.getCenterY();
+            
+            Circle pointEnd = new Circle();
+            //if end value is > pointAmt, modulo to get final point
+            // else get point at the end value
             if (i*multVal >= points.size()) {
-                timesArray[i] = (i*multVal) % points.size();
+                //Store end point and get position
+                pointEnd = points.get(((i*multVal) % points.size()));
+                lineEndX = pointEnd.getCenterX();
+                lineEndY = pointEnd.getCenterY();
             }
             else {
-                timesArray[i] = i*multVal;
+                pointEnd = points.get(i*multVal);
+                lineEndX = pointEnd.getCenterX();
+                lineEndY = pointEnd.getCenterY();
             }
+
+            //Make new line
+            Line line = new Line();
+
+            //set start position
+            line.setStartX(lineStartX);
+            line.setStartY(lineStartY);
+
+            //set end position
+            line.setEndX(lineEndX);
+            line.setEndY(lineEndY);
+
+            //Set display properties
+            line.setStroke(Color.WHITE);
+
+            //Store and display lines
+            lines.add(line);
+            drawing.getChildren().add(lines.get(i));
         }
     }
 
+    //Start method for timesTable
     public void start() {
         AnimationTimer timer = new AnimationTimer() {
             private Duration lastUpdate = Duration.of(0, ChronoUnit.NANOS);

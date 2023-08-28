@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-
 import javafx.application.Application;
 import javafx.beans.value.ObservableValue;
 import javafx.beans.value.ChangeListener;
@@ -13,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Circle;
 
 public class timesTableMain extends Application {
     public static void main(String[] args) {
@@ -24,7 +24,7 @@ public class timesTableMain extends Application {
         primaryStage.setTitle("Times Table Visualization");
 
         //Initialize Variables
-        int drawSize = 750;
+        int drawSize = 650;
         int optSize = 50;
 
         //Box Initializtion
@@ -49,6 +49,7 @@ public class timesTableMain extends Application {
         Label valLabel = new Label("Times Table Value: ");
         Label value = new Label(Double.toString(tableVal.getValue()));
 
+        //Event listener for slider
         tableVal.valueProperty().addListener(new ChangeListener<Number>() {
 
             @Override
@@ -68,18 +69,23 @@ public class timesTableMain extends Application {
         //Add elements to fields for BorderPane
         pointInput.getChildren().addAll(pointLabel,pointsAmt, submitP);
         valInput.getChildren().addAll(valLabel, value);
-
+        
         options.getChildren().addAll(valInput,tableVal,pointInput,animCtrl);
 
+        //Setup Pane for drawing
         drawing.setStyle("-fx-background-color: Black");
         drawing.setMinWidth(drawSize);
         drawing.setMinHeight(drawSize);
 
+        //Set size for option pane from optSize
         options.setMinHeight(optSize);
 
+        //Create instance of timesTable class
         timesTable generator = new timesTable();
 
-        generator.createCircle(drawing, 11);
+        //Create circle in drawing pane
+        ArrayList<Circle> circle = generator.createCircle(drawing, 10);
+        generator.createLines(drawing, 2, circle);
 
         root.setCenter(drawing);
         root.setTop(options);
