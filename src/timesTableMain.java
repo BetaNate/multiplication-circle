@@ -24,7 +24,8 @@ public class timesTableMain extends Application {
         primaryStage.setTitle("Times Table Visualization");
 
         //Initialize Variables
-        int drawSize = 650;
+        int drawHeight = 550;
+        int drawWidth = 800;
         int optSize = 50;
 
         //Box Initializtion
@@ -74,26 +75,27 @@ public class timesTableMain extends Application {
 
         //Setup Pane for drawing
         drawing.setStyle("-fx-background-color: Black");
-        drawing.setMinWidth(drawSize);
-        drawing.setMinHeight(drawSize);
+        drawing.setMinWidth(drawWidth);
+        drawing.setMinHeight(drawHeight);
 
         //Set size for option pane from optSize
         options.setMinHeight(optSize);
+
+        root.setCenter(drawing);
+        root.setTop(options);
+
+        Scene scene = new Scene(root);
+        primaryStage.setScene(scene);
+        primaryStage.setMinHeight((drawHeight + optSize));
+        primaryStage.setMinWidth(drawWidth);
+        primaryStage.show();
 
         //Create instance of timesTable class
         timesTable generator = new timesTable();
 
         //Create circle in drawing pane
-        ArrayList<Circle> circle = generator.createCircle(drawing, 10);
+        ArrayList<Circle> circle = generator.createCircle(drawing, 300);
         generator.createLines(drawing, 2, circle);
-
-        root.setCenter(drawing);
-        root.setTop(options);
-
-        Scene scene = new Scene(root, (drawSize + optSize), (drawSize + optSize));
-        primaryStage.setScene(scene);
-        primaryStage.show();
-        generator.start();
 
     }
 }

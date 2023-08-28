@@ -15,8 +15,8 @@ public class timesTable {
     ArrayList<Line> lines = new ArrayList<>();
 
     public ArrayList createCircle(Pane drawing, int pointAmt) {
-        int centerX = 400;
-        int centerY = 200;
+        double centerX = drawing.getWidth() / 2;
+        double centerY = drawing.getHeight() / 2;
 
         int pointRadius = 1;
         int circleRadius = 150;
@@ -25,7 +25,7 @@ public class timesTable {
             double degrees = 360 * i / pointAmt;
             double angle = Math.toRadians(degrees);
 
-            double xOffset = centerX + (Math.cos(angle) * circleRadius);
+            double xOffset = centerX - (Math.cos(angle) * circleRadius);
             double yOffset = centerY + (Math.sin(angle) * circleRadius);
 
             Circle point = new Circle(xOffset, yOffset, pointRadius);
@@ -35,6 +35,7 @@ public class timesTable {
             drawing.getChildren().add(points.get(i));
         }
 
+        
         return points;
     }
 
