@@ -1,5 +1,5 @@
-import java.util.ArrayList;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
@@ -7,6 +7,8 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Button;
@@ -14,8 +16,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.Pane;
-import javafx.scene.shape.Circle;
-
+import javafx.animation.Timeline;
+import javafx.animation.KeyFrame;
 
 public class timesTableMain extends Application {
     public static void main(String[] args) {
@@ -27,22 +29,18 @@ public class timesTableMain extends Application {
     private final int optSize = 50;
     private final int pointMin = 10;
     private final int pointMax = 360;
+    circleGenerator generator = new circleGenerator();
 
     private int points;
     private int multVal;
-    private ArrayList<Circle> circle = new ArrayList<>();
+    private int trackInc = 0;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Times Table Visualization");
 
-        //Initialize Variables
-        //These variables cannot be listed as private; Illegal Parameter
-
         //Box Initializtion
         BorderPane root = new BorderPane();
-
-
 /* 
 * ---------------------------
 *        USER CONTROLS
@@ -63,25 +61,25 @@ public class timesTableMain extends Application {
         Slider tableVal = new Slider(2,360,2);
         tableVal.setShowTickMarks(true);
         tableVal.setShowTickLabels(true);
-        tableVal.setBlockIncrement(0.1f);
+        tableVal.setBlockIncrement(0.1);
         Label valLabel = new Label("Times Table Value: ");
         Label value = new Label(Double.toString(tableVal.getValue()));
 
         //Time increment slider
         //Increase in value increases jumped values
         Slider incrementSlider = new Slider(1,10,1);
-        tableVal.setShowTickMarks(true);
-        tableVal.setShowTickLabels(true);
-        tableVal.setBlockIncrement(0.1f);
+        incrementSlider.setShowTickMarks(true);
+        incrementSlider.setShowTickLabels(true);
+        incrementSlider.setBlockIncrement(0.1f);
         Label incLabel = new Label("T: ");
         Label incValue = new Label(Double.toString(incrementSlider.getValue()));
 
         //FPS slider
         //Change delay between increments
         Slider fpsSlider = new Slider(1,10,1);
-        tableVal.setShowTickMarks(true);
-        tableVal.setShowTickLabels(true);
-        tableVal.setBlockIncrement(0.1f);
+        fpsSlider.setShowTickMarks(true);
+        fpsSlider.setShowTickLabels(true);
+        fpsSlider.setBlockIncrement(0.1f);
         Label fpsLabel = new Label("T: ");
         Label fpsValue = new Label(Double.toString(fpsSlider.getValue()));
 
@@ -117,21 +115,21 @@ public class timesTableMain extends Application {
         primaryStage.setMinHeight((drawHeight + optSize));
         primaryStage.setMinWidth(drawWidth);
         primaryStage.show();
-
-
+        animateLines(tableVal);
 /*
  * ------------------------------
- *       CIRCLE ANIMATION
+ *       CIRCLE CONTROLS
  * ------------------------------
  */
         //Create instance of timesTable class
-        timesTable generator = new timesTable();
+        
 
          //Create circle in drawing pane
         points = Integer.parseInt(pointsAmt.getText());
         multVal = (int) Math.round(tableVal.getValue());
-        circle = generator.createCircle(drawing, points);
-        generator.createLines(drawing, multVal, circle);
+        generator.createCircle(drawing, points);
+        generator.createLines(drawing, multVal, 0);
+
 
         //Event listener for multValue slider
         tableVal.valueProperty().addListener(new ChangeListener<Number>() {
@@ -145,8 +143,8 @@ public class timesTableMain extends Application {
                        String.format("%.1f", newValue.doubleValue()));
 
                   drawing.getChildren().clear();
-                  circle = generator.createCircle(drawing, points);
-                  generator.createLines(drawing, newValue.intValue(), circle);
+                  generator.createCircle(drawing, points);
+                  generator.createLines(drawing, newValue.doubleValue(), trackInc++);
               }
         });
 
@@ -208,10 +206,48 @@ public class timesTableMain extends Application {
 
                 drawing.getChildren().clear();
                 multVal = (int) Math.round(tableVal.getValue());
-                circle = generator.createCircle(drawing, points);
-                generator.createLines(drawing, multVal, circle);
+                generator.createCircle(drawing, points);
+                generator.createLines(drawing, multVal, 0);
             }
         });
 
+         animCtrl.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+
+                if(tableVal.isValueChanging()) {
+
+                }
+            }
+        });
+
+         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent e) {
+                Platform.exit();
+                System.exit(0);
+            }
+        });
+
+    }
+
+    /*
+     * ---------------------------
+     *       CIRCLE ANIMATION
+     * ---------------------------
+     */
+
+     public void animateLines(Slider tableVal) {
+        Duration timer = Duration.millis(100);
+        Timeline animate = new Timeline(
+            new KeyFrame(timer, event -> {
+                tableVal.increment();
+                if (tableVal.getValue() >= tableVal.getMax()) {
+                    tableVal.setValue(tableVal.getMin());
+                }
+            })
+        );
+        animate.setCycleCount(Timeline.INDEFINITE); // Repeat indefinitely
+        animate.play();
     }
 }

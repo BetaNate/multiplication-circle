@@ -1,20 +1,30 @@
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-
-import javafx.animation.AnimationTimer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 import javafx.scene.layout.Pane;
 
-public class timesTable {
+public class circleGenerator {
 
 
     ArrayList<Circle> points = new ArrayList<>();
     ArrayList<Line> lines = new ArrayList<>();
+    int trackLines = 1;
 
-    public ArrayList<Circle> createCircle(Pane drawing, int pointAmt) {
+    private final Color[] circleColors = {Color.BLUE, Color.LIGHTBLUE,Color.TURQUOISE,
+                                          Color.CYAN, Color.DARKCYAN,
+                                          Color.SEAGREEN,Color.GREEN,
+                                          Color.CHARTREUSE,Color.GREENYELLOW,
+                                          Color.YELLOW, Color.GREENYELLOW,
+                                          Color.CHARTREUSE,Color.GREEN,
+                                          Color.SEAGREEN,Color.DARKCYAN,
+                                          Color.CYAN,Color.TURQUOISE,Color.LIGHTBLUE,Color.BLUE};
+    private int colorIndex = 1;
+    
+
+    public void createCircle(Pane drawing, int pointAmt) {
 
         if (points.isEmpty() == false) {
             points.clear();
@@ -27,7 +37,7 @@ public class timesTable {
         int circleRadius = 150;
 
         Circle circle = new Circle(centerX, centerY, circleRadius);
-        circle.setStroke(Color.WHITE);
+        circle.setStroke(Color.GREY);
 
         drawing.getChildren().add(circle);
 
@@ -45,19 +55,28 @@ public class timesTable {
             drawing.getChildren().add(points.get(i));
         }
 
-        
-        return points;
     }
 
         //Method for making lines
         /*Input: multVal: Times table value, points: Circle made from createCircle()
                  drawing: Pane needed for displaying lines on GUI
         */
-        public void createLines(Pane drawing, int multVal, ArrayList<Circle> points) {
+        public void createLines(Pane drawing, double multVal, int trackInc) {
+            if(colorIndex >= (circleColors.length - 1)) {
+                colorIndex = 1;
+            }
+            if((0.1*trackLines) > 1) {
+                 trackLines = 1;
+            }
 
-        if(lines.isEmpty() == false) {
-            lines.clear();
+            if(lines.isEmpty() == false) {
+                lines.clear();
+                trackLines++;
+            }
+        if(trackInc % 10 == 0) {
+            colorIndex++;
         }
+
         //Initialize variables
         //Will store the position of the start and end points for each line
         double lineStartX;
@@ -75,19 +94,10 @@ public class timesTable {
             lineStartY = pointStart.getCenterY();
             
             Circle pointEnd = new Circle();
-            //if end value is > pointAmt, modulo to get final point
-            // else get point at the end value
-            if (i*multVal >= points.size()) {
-                //Store end point and get position
-                pointEnd = points.get(((i*multVal) % points.size()));
-                lineEndX = pointEnd.getCenterX();
-                lineEndY = pointEnd.getCenterY();
-            }
-            else {
-                pointEnd = points.get(i*multVal);
-                lineEndX = pointEnd.getCenterX();
-                lineEndY = pointEnd.getCenterY();
-            }
+           
+            pointEnd = roundEnd(i, multVal);
+            lineEndX = pointEnd.getCenterX();
+            lineEndY = pointEnd.getCenterY();
 
             //Make new line
             Line line = new Line();
@@ -101,27 +111,39 @@ public class timesTable {
             line.setEndY(lineEndY);
 
             //Set display properties
-            line.setStroke(Color.WHITE);
+            if(lines.size() <= (points.size() * (0.1*trackLines))) {
+                line.setStroke(circleColors[colorIndex - 1]);
+            }
+            else {
+                line.setStroke(circleColors[colorIndex]);
+            }
 
             //Store and display lines
             lines.add(line);
             drawing.getChildren().add(lines.get(i));
+            
         }
     }
 
-    //Start method for timesTable
-    public void start() {
-        AnimationTimer timer = new AnimationTimer() {
-            private Duration lastUpdate = Duration.of(0, ChronoUnit.NANOS);
-            @Override
-            public void handle(long now) {
-                Duration nowDur = Duration.of(now, ChronoUnit.NANOS);
-                if (nowDur.minus(lastUpdate).toMillis() > 25) {
-                    lastUpdate = nowDur;    
-                  //  generateConnections(pointArray);
-                }
-            }
-        };
-        timer.start();
+/*
+* ------------------------
+*   FINDING END OF LINE
+* ------------------------
+*/
+
+     //if end value is > pointAmt, modulo to get final point
+            // else get point at the end value
+    public Circle roundEnd(int point, double multVal) {
+        Circle pointEndPos = new Circle();
+
+        if ((int)Math.round((point*multVal)) >= points.size()) {
+            pointEndPos = points.get(((int)Math.round((point*multVal)) % points.size()));
+        }
+        else {
+            pointEndPos = points.get((int)Math.round((point*multVal)));
+        }
+
+        return pointEndPos;
     }
+        
 }
