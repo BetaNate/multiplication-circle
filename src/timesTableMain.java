@@ -311,7 +311,5 @@ public class timesTableMain extends Application {
             }
         });
 
-        animate.setCycleCount(Timeline.INDEFINITE); // Repeat indefinitely
-        animate.play();
     }
 }
