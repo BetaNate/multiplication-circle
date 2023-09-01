@@ -11,17 +11,17 @@ public class circleGenerator {
 
     ArrayList<Circle> points = new ArrayList<>();
     ArrayList<Line> lines = new ArrayList<>();
-    int trackLines = 1;
 
-    private final Color[] circleColors = {Color.BLUE, Color.LIGHTBLUE,Color.TURQUOISE,
-                                          Color.CYAN, Color.DARKCYAN,
+    private final Color[] circleColors = {Color.BLUE, Color.MAGENTA,
+                                          Color.DARKCYAN, Color.ORANGERED,
                                           Color.SEAGREEN,Color.GREEN,
-                                          Color.CHARTREUSE,Color.GREENYELLOW,
-                                          Color.YELLOW, Color.GREENYELLOW,
-                                          Color.CHARTREUSE,Color.GREEN,
-                                          Color.SEAGREEN,Color.DARKCYAN,
-                                          Color.CYAN,Color.TURQUOISE,Color.LIGHTBLUE,Color.BLUE};
-    private int colorIndex = 1;
+                                          Color.YELLOW,Color.CHARTREUSE,
+                                          Color.RED, Color.ORANGE,
+                                          Color.CYAN, Color.DARKCYAN,
+                                          Color.FIREBRICK, Color.GOLDENROD,
+                                          Color.INDIGO, Color.LAWNGREEN,
+                                          Color.SADDLEBROWN, Color.SPRINGGREEN,
+                                          Color.PALEGREEN, Color.PALETURQUOISE};
     
 
     public void createCircle(Pane drawing, int pointAmt) {
@@ -57,71 +57,59 @@ public class circleGenerator {
 
     }
 
-        //Method for making lines
-        /*Input: multVal: Times table value, points: Circle made from createCircle()
-                 drawing: Pane needed for displaying lines on GUI
-        */
-        public void createLines(Pane drawing, double multVal, int trackInc) {
-            if(colorIndex >= (circleColors.length - 1)) {
-                colorIndex = 1;
-            }
-            if((0.1*trackLines) > 1) {
-                 trackLines = 1;
-            }
+    //Method for making lines
+    /*Input: multVal: Times table value, points: Circle made from createCircle()
+             drawing: Pane needed for displaying lines on GUI
+    */
+    public void createLines(Pane drawing, double multVal, int colorIndex) {
 
-            if(lines.isEmpty() == false) {
-                lines.clear();
-                trackLines++;
-            }
-        if(trackInc % 10 == 0) {
-            colorIndex++;
+        if(lines.isEmpty() == false) {
+            lines.clear();
         }
 
-        //Initialize variables
-        //Will store the position of the start and end points for each line
-        double lineStartX;
-        double lineStartY;
-        double lineEndX;
-        double lineEndY;
+    //Initialize variables
+    //Will store the position of the start and end points for each line
+    double lineStartX;
+    double lineStartY;
+    double lineEndX;
+    double lineEndY;
 
-        //Loop through
-        for(int i = 0; i < points.size(); i++) {
-
-            //Store starting point and get position
-            Circle pointStart = new Circle();
-            pointStart= points.get(i);
-            lineStartX = pointStart.getCenterX();
-            lineStartY = pointStart.getCenterY();
+    //Loop through
+    for(int i = 0; i < points.size(); i++) {
+        //Store starting point and get position
+        Circle pointStart = new Circle();
+        pointStart= points.get(i);
+        lineStartX = pointStart.getCenterX();
+        lineStartY = pointStart.getCenterY();
             
-            Circle pointEnd = new Circle();
+        Circle pointEnd = new Circle();
            
-            pointEnd = roundEnd(i, multVal);
-            lineEndX = pointEnd.getCenterX();
-            lineEndY = pointEnd.getCenterY();
+        pointEnd = roundEnd(i, multVal);
+        lineEndX = pointEnd.getCenterX();
+        lineEndY = pointEnd.getCenterY();
 
-            //Make new line
-            Line line = new Line();
+        //Make new line
+        Line line = new Line();
 
-            //set start position
-            line.setStartX(lineStartX);
-            line.setStartY(lineStartY);
+        //set start position
+        line.setStartX(lineStartX);
+        line.setStartY(lineStartY);
 
-            //set end position
-            line.setEndX(lineEndX);
-            line.setEndY(lineEndY);
+        //set end position
+        line.setEndX(lineEndX);
+        line.setEndY(lineEndY);
 
-            //Set display properties
-            if(lines.size() <= (points.size() * (0.1*trackLines))) {
-                line.setStroke(circleColors[colorIndex - 1]);
-            }
-            else {
-                line.setStroke(circleColors[colorIndex]);
-            }
+        //Set display properties
+        if(lines.size() <= (points.size() / 2)) {
+            line.setStroke(circleColors[colorIndex - 1]);
+        }
+        else {
+            line.setStroke(circleColors[colorIndex]);
+        }
 
-            //Store and display lines
-            lines.add(line);
-            drawing.getChildren().add(lines.get(i));
-            
+        //Store and display lines
+        lines.add(line);
+        drawing.getChildren().add(lines.get(i));    
         }
     }
 
