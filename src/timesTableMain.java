@@ -288,7 +288,7 @@ public class timesTableMain extends Application {
      */
 
      public void animateLines(Slider tableVal, Button animCtrl) {
-        Duration timer = Duration.millis(framesToMilli);
+        Duration timer = Duration.millis(100);
         Timeline animate = new Timeline(
             new KeyFrame(timer, event -> {
                 tableVal.increment();
@@ -297,7 +297,7 @@ public class timesTableMain extends Application {
                 }
             })
         );
-
+         
          //Play & Pause Animation control
          animCtrl.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -310,6 +310,7 @@ public class timesTableMain extends Application {
                 }
             }
         });
-
+        animate.setCycleCount(Timeline.INDEFINITE);
+        animate.play();
     }
 }
