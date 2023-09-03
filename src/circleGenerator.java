@@ -2,16 +2,26 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 import javafx.scene.layout.Pane;
+
+/*
+ * Author: Nathan J. Rowe
+ * CS 351L Fall 2023, Project 1: Times Table Visualization
+ * Class: circleGenerator, call from timesTableMain.java
+ * Abstract: Methods for displayings circle points, lines
+ *           and color from user input.
+ *
+ */
 
 public class circleGenerator {
 
 
-    ArrayList<Circle> points = new ArrayList<>();
-    ArrayList<Line> lines = new ArrayList<>();
+    private final ArrayList<Circle> points = new ArrayList<>();
+    private final ArrayList<Line> lines = new ArrayList<>();
 
+    //Initialize variables
+    private final int pointRadius = 1;
+    private final int circleRadius = 150;
     private final Color[] circleColors = {Color.BLUE, Color.MAGENTA,
                                           Color.DARKCYAN, Color.ORANGERED,
                                           Color.SEAGREEN,Color.GREEN,
@@ -22,6 +32,12 @@ public class circleGenerator {
                                           Color.INDIGO, Color.LAWNGREEN,
                                           Color.SADDLEBROWN, Color.SPRINGGREEN,
                                           Color.PALEGREEN, Color.PALETURQUOISE};
+
+    //createLines: store the position of the start and end points for each line
+    private double lineStartX;
+    private double lineStartY;
+    private double lineEndX;
+    private double lineEndY;
     
 
     public void createCircle(Pane drawing, int pointAmt) {
@@ -30,11 +46,8 @@ public class circleGenerator {
             points.clear();
         }
 
-        double centerX = drawing.getWidth() / 2;
-        double centerY = drawing.getHeight() / 2;
-
-        int pointRadius = 1;
-        int circleRadius = 150;
+        final double centerX = drawing.getWidth() / 2;
+        final double centerY = drawing.getHeight() / 2;
 
         Circle circle = new Circle(centerX, centerY, circleRadius);
         circle.setStroke(Color.GREY);
@@ -66,13 +79,6 @@ public class circleGenerator {
         if(lines.isEmpty() == false) {
             lines.clear();
         }
-
-    //Initialize variables
-    //Will store the position of the start and end points for each line
-    double lineStartX;
-    double lineStartY;
-    double lineEndX;
-    double lineEndY;
 
     //Loop through
     for(int i = 0; i < points.size(); i++) {

@@ -10,7 +10,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import javafx.util.Duration;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Button;
@@ -23,8 +22,16 @@ import javafx.animation.Timeline;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.animation.Animation.Status;
-import javafx.animation.KeyFrame;
 
+/*
+ * Author: Nathan J. Rowe
+ * CS 351L Fall 2023, Project 1: Times Table Visualization
+ * Class: Main Class, call from here
+ * Abstract: Visualizes a times table with given number of points
+ * Main Class creates scene, user controls and listeners
+ * Circle creation in circleGenerator.java, animation in
+ * AnimateCircle.java
+ */
 public class timesTableMain extends Application {
     public static void main(String[] args) {
         launch(args);
@@ -35,7 +42,8 @@ public class timesTableMain extends Application {
     private final int optSize = 50;
     private final int pointMin = 10;
     private final int pointMax = 360;
-    circleGenerator generator = new circleGenerator();
+    private final circleGenerator generator = new circleGenerator();
+    private final AnimateCircle animate = new AnimateCircle();
 
     private int points;
     private int multVal;
@@ -93,7 +101,7 @@ public class timesTableMain extends Application {
 
         //FPS slider
         //Change delay between increments
-        Slider fpsSlider = new Slider(1,30,1);
+        Slider fpsSlider = new Slider(1,30,10);
         fpsSlider.setShowTickMarks(true);
         fpsSlider.setShowTickLabels(true);
         fpsSlider.setBlockIncrement(0.1f);
@@ -145,8 +153,10 @@ public class timesTableMain extends Application {
         primaryStage.setMinHeight((drawHeight + optSize));
         primaryStage.setMinWidth(drawWidth);
         primaryStage.show();
-        animateLines(tableVal, animCtrl);
+        //Create timeline
+        Timeline animation = animate.animateLines(tableVal, animCtrl);
 
+        //Exit processes after window closes
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
         @Override
             public void handle(WindowEvent e) {
@@ -154,26 +164,21 @@ public class timesTableMain extends Application {
                 System.exit(0);
             }
         });
+
+
 /*
  * ------------------------------
  *       CIRCLE CONTROLS
- * 
- * Event Listeners for animCtrl button
- * and fpsSlider found in animation
  * ------------------------------
  */
         
-
-         //Create circle in drawing pane
+        //Get initial values on startup
         points = Integer.parseInt(pointsAmt.getText());
         multVal = (int) Math.round(tableVal.getValue());
-        generator.createCircle(drawing, points);
-        generator.createLines(drawing, multVal, colorIndex);
 
 
         //Event listener for multValue slider
         tableVal.valueProperty().addListener(new ChangeListener<Number>() {
-
             @Override
             public void changed(
                ObservableValue<? extends Number> observableValue, 
@@ -190,7 +195,6 @@ public class timesTableMain extends Application {
 
         //Event listener for multiplication increment slider
         incrementSlider.valueProperty().addListener(new ChangeListener<Number>() {
-
             @Override
             public void changed(
                ObservableValue<? extends Number> observableValue, 
@@ -204,7 +208,6 @@ public class timesTableMain extends Application {
 
           //Event listener for fps slider
         fpsSlider.valueProperty().addListener(new ChangeListener<Number>() {
-
             @Override
             public void changed(
                ObservableValue<? extends Number> observableValue, 
@@ -213,7 +216,7 @@ public class timesTableMain extends Application {
                   fpsLabel.textProperty().setValue(
                        "Frames Per Second: " + String.format("%d", newValue.intValue()));
                   framesToMilli = 1000 / newValue.intValue();
-                  animateLines(tableVal, animCtrl);
+                  animation.setRate(animation.getCycleDuration().toMillis() / framesToMilli);
               }
         });
 
@@ -251,6 +254,9 @@ public class timesTableMain extends Application {
             }
         });
 
+        //Choose color option
+        //Each case chooses a set of two colors from circleGenerator's
+        //color array. View circleGenerator for implementation
         colorBox.setOnAction(new EventHandler<ActionEvent> () {
             @Override
             public void handle(ActionEvent e) {
@@ -279,38 +285,18 @@ public class timesTableMain extends Application {
                 generator.createLines(drawing, multVal, colorIndex);
             }
         });
-    }
 
-    /*
-     * ---------------------------
-     *       CIRCLE ANIMATION
-     * ---------------------------
-     */
-
-     public void animateLines(Slider tableVal, Button animCtrl) {
-        Duration timer = Duration.millis(100);
-        Timeline animate = new Timeline(
-            new KeyFrame(timer, event -> {
-                tableVal.increment();
-                if (tableVal.getValue() >= tableVal.getMax()) {
-                    tableVal.setValue(tableVal.getMin());
-                }
-            })
-        );
-         
          //Play & Pause Animation control
-         animCtrl.setOnAction(new EventHandler<ActionEvent>() {
+        animCtrl.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-                if(animate.getStatus() == Status.RUNNING) {
-                    animate.pause();
+                if(animation.getStatus() == Status.RUNNING) {
+                    animation.pause();
                 }
                 else {
-                    animate.play();
+                    animation.play();
                 }
             }
         });
-        animate.setCycleCount(Timeline.INDEFINITE);
-        animate.play();
     }
 }
